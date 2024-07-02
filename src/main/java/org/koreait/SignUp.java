@@ -83,7 +83,7 @@ public class SignUp {
         for (int i = 0; i < members.size(); i++) {
             if (iD.equals(members.get(i).loginId) && pW.equals(members.get(i).loginPw)) {
                 System.out.println("로그인되었습니다");
-//                loginStatus = 1;
+                loginStatus = 1;
             } else {
                 System.out.println("다시 로그인 해주세요");
                 login();

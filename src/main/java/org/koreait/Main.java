@@ -10,7 +10,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("=== Article 실행 ===");
-        new SignUp().run();
+//        new SignUp().run();
         new Article().run();
 
 

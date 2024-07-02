@@ -41,9 +41,14 @@ public class Article {
         String cmd = sc.nextLine().trim();
         String[] cmds = cmd.split(" ");
 
-        if(cmd.length() == 0) {
+        if (cmd.length() == 0) {
             System.out.println("명령어를 입력해주세요");
             run();
+        }
+
+        if (body.equals("list")) {
+            searchTitle = cmds[2];
+            list();
         }
 
         if (cmds.length == 2) {
@@ -55,15 +60,11 @@ public class Article {
                 body = cmds[1];
                 tail = Integer.parseInt(cmds[2]);
             } catch (NumberFormatException e) {
-                if (body.equals("list")) {
-                    searchTitle = cmds[2];
-                    list();
-                } else {
-                    System.out.println("검색할 id는 숫자만 입력해주세요");
-                    searchTitle = "";
-                }
+                System.out.println("검색할 id는 숫자만 입력해주세요");
+                searchTitle = "";
                 run();
             }
+            run();
         }
 
         if (body.equals("exit")) {
@@ -148,6 +149,7 @@ public class Article {
     }
 
     public void list() {
+        int count = 0;
 
         System.out.println("   번호 /   제목  /   내용");
         if (searchTitle == "") {
@@ -168,7 +170,12 @@ public class Article {
                         titleCut = titleCut.substring(0, 3);
                     }
                     System.out.printf("   %d   /   %s   /   %s   \n", articles.get(i).id, titleCut, articles.get(i).body);
+                    count++;
                 }
+            }
+
+            if (count == 0) {
+                System.out.println("검색된 결과가 없습니다");
             }
             run();
         }
