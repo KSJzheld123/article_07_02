@@ -8,7 +8,8 @@ import java.util.Scanner;
 
 public class Article {
 
-    int loginStatus = 0;
+    int loginStatus2 = 0;
+    Member nowLoginMember = new Member();
 
     List<ArticleList> articles = new ArrayList<>();
     Scanner sc = new Scanner(System.in);
@@ -17,6 +18,7 @@ public class Article {
     public Article() {
         System.out.println("테스트 게시물이 생성되었습니다");
         for (int i = 0; i < 3; i++) {
+            String test = "테스트";
             int id = lastId + 1;
             String title = id + "번째 테스트 게시물 제목";
             String body = id + "번째 테스트 게시물 내용";
@@ -25,10 +27,11 @@ public class Article {
 
             lastId++;
 
-            ArticleList article = new ArticleList(title, body, id, time, time2);
+            ArticleList article = new ArticleList(title, body, id, time, time2, test);
 
             articles.add(article);
         }
+
     }
 
     String head = "";
@@ -37,8 +40,14 @@ public class Article {
     String search = "";
     String cmd = "";
 
+    public void run2(int loginStatus, Member loginStatusMember) {
+        loginStatus2 = loginStatus;
+        nowLoginMember = loginStatusMember;
+        run();
+    }
 
     public void run() {
+        System.out.println("게시판");
         System.out.printf("명령어 ) ");
         cmd = sc.nextLine().trim();
         rq();
@@ -48,9 +57,16 @@ public class Article {
             run();
         }
 
-        while (loginStatus == 0) {
+        if(loginStatus2 == 0) {
+            System.out.println("로그인 후 이용해주세요");
+
+        }
+
+        while (loginStatus2 == 2) {
             if (head.equals("exit")) {
                 exit();
+            } else if (head.equals("logout")) {
+                logout();
             } else if (body.equals("write")) {
                 write();
             } else if (body.equals("detail")) {
@@ -84,9 +100,10 @@ public class Article {
         String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
         String time2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
 
+
         lastId++;
 
-        ArticleList article = new ArticleList(title, body, id, time, time2);
+        ArticleList article = new ArticleList(title, body, id, time, time2, nowLoginMember.getName());
         System.out.printf("%d번 게시글이 작성되었습니다\n", id);
 
         articles.add(article);
@@ -105,6 +122,7 @@ public class Article {
                 System.out.println("최근작성시간 : " + articles.get(i).time2);
                 System.out.println("제목 : " + articles.get(i).title);
                 System.out.println("내용 : " + articles.get(i).body);
+                System.out.println("작성자 : " + nowLoginMember.getName());
                 count++;
             }
         }
@@ -136,14 +154,18 @@ public class Article {
         int count = 0;
         rq();
         String searchTitle = search;
-        System.out.println("   번호 /   제목  /   내용");
+        System.out.println("   번호 /          최근작성날짜          /   작성자   /   제목    /   내용");
         if (searchTitle == "") {
             for (int i = 0; i < articles.size(); i++) {
                 String titleCut = articles.get(i).title;
+                String writerNameCut = articles.get(i).writerName;
                 if (articles.get(i).title.length() > 3) {
                     titleCut = titleCut.substring(0, 3);
                 }
-                System.out.printf("   %d   /   %s   /   %s   \n", articles.get(i).id, titleCut, articles.get(i).body);
+                if (articles.get(i).writerName.length() > 3) {
+                    writerNameCut = writerNameCut.substring(0, 3);
+                }
+                System.out.printf("   %d   /       %s       /   %s   /   %s   /   %s   \n", articles.get(i).id,articles.get(i).time2,writerNameCut , titleCut, articles.get(i).body);
             }
             run();
         } else if (searchTitle != "") {
@@ -151,10 +173,14 @@ public class Article {
                 String articleTitleMatching = articles.get(i).title;
                 if (articleTitleMatching.contains(searchTitle)) {
                     String titleCut = articles.get(i).title;
+                    String writerNameCut = articles.get(i).writerName;
                     if (articles.get(i).title.length() > 3) {
                         titleCut = titleCut.substring(0, 3);
                     }
-                    System.out.printf("   %d   /   %s   /   %s   \n", articles.get(i).id, titleCut, articles.get(i).body);
+                    if (articles.get(i).writerName.length() > 3) {
+                        writerNameCut = writerNameCut.substring(0, 3);
+                    }
+                    System.out.printf("   %d   /       %s       /  %s  /   %s   /   %s   \n", articles.get(i).id,articles.get(i).time2,writerNameCut , titleCut, articles.get(i).body);
                     count++;
                 }
             }
@@ -226,7 +252,15 @@ public class Article {
 
     void exit() {
         rq();
-        sc.close();
+        loginStatus2 = 0;
+    }
+
+    void logout() {
+        rq();
+        System.out.println("로그아웃 하였습니다");
+        loginStatus2 = 0;
+        nowLoginMember = null;
+        run();
     }
 }
 
