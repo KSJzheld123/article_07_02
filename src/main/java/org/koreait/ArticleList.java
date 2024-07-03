@@ -8,14 +8,16 @@ public class ArticleList {
     String time;
     String time2;
     String writerName;
+    int memberId;
 
-    ArticleList(String title, String body, int id, String time, String time2, String writerName) {
+    ArticleList(String title, String body, int id, String time, String time2, String writerName, int memberId) {
         this.title = title;
         this.body = body;
         this.id = id;
         this.time = time;
         this.time2 = time2;
         this.writerName = writerName;
+        this.memberId = id;
     }
 
     public int getId() {

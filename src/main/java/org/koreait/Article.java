@@ -20,6 +20,7 @@ public class Article {
         for (int i = 0; i < 3; i++) {
             String test = "테스트";
             int id = lastId + 1;
+            int testId = -1;
             String title = id + "번째 테스트 게시물 제목";
             String body = id + "번째 테스트 게시물 내용";
             String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
@@ -27,7 +28,7 @@ public class Article {
 
             lastId++;
 
-            ArticleList article = new ArticleList(title, body, id, time, time2, test);
+            ArticleList article = new ArticleList(title, body, id, time, time2, test, testId);
 
             articles.add(article);
         }
@@ -57,9 +58,8 @@ public class Article {
             run();
         }
 
-        if(loginStatus2 == 0) {
+        if (loginStatus2 == 0) {
             System.out.println("로그인 후 이용해주세요");
-
         }
 
         while (loginStatus2 == 2) {
@@ -100,10 +100,9 @@ public class Article {
         String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
         String time2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
 
-
         lastId++;
 
-        ArticleList article = new ArticleList(title, body, id, time, time2, nowLoginMember.getName());
+        ArticleList article = new ArticleList(title, body, id, time, time2, nowLoginMember.getName(), nowLoginMember.id);
         System.out.printf("%d번 게시글이 작성되었습니다\n", id);
 
         articles.add(article);
@@ -136,8 +135,14 @@ public class Article {
     public void delete() {
         int count = 0;
         rq();
+
         for (int i = 0; i < articles.size(); i++) {
+
             if (tail == articles.get(i).id) {
+                if (nowLoginMember.id != articles.get(i).memberId) {
+                    System.out.println("다른 사람이 쓴 게시물은 삭제할 수 없습니다");
+                    run();
+                }
                 System.out.println(articles.get(i).id + "번 게시글이 삭제되었습니다");
                 articles.remove(i);
                 count++;
@@ -165,7 +170,7 @@ public class Article {
                 if (articles.get(i).writerName.length() > 3) {
                     writerNameCut = writerNameCut.substring(0, 3);
                 }
-                System.out.printf("   %d   /       %s       /   %s   /   %s   /   %s   \n", articles.get(i).id,articles.get(i).time2,writerNameCut , titleCut, articles.get(i).body);
+                System.out.printf("   %d   /       %s       /   %s   /   %s   /   %s   \n", articles.get(i).id, articles.get(i).time2, writerNameCut, titleCut, articles.get(i).body);
             }
             run();
         } else if (searchTitle != "") {
@@ -180,7 +185,7 @@ public class Article {
                     if (articles.get(i).writerName.length() > 3) {
                         writerNameCut = writerNameCut.substring(0, 3);
                     }
-                    System.out.printf("   %d   /       %s       /  %s  /   %s   /   %s   \n", articles.get(i).id,articles.get(i).time2,writerNameCut , titleCut, articles.get(i).body);
+                    System.out.printf("   %d   /       %s       /  %s  /   %s   /   %s   \n", articles.get(i).id, articles.get(i).time2, writerNameCut, titleCut, articles.get(i).body);
                     count++;
                 }
             }
@@ -197,6 +202,10 @@ public class Article {
         rq();
         for (int i = 0; i < articles.size(); i++) {
             if (tail == articles.get(i).id) {
+                if (nowLoginMember.id != articles.get(i).memberId) {
+                    System.out.println("다른 사람이 쓴 게시물은 수정할 수 없습니다");
+                    run();
+                }
                 System.out.println("수정 할 id : " + articles.get(i).id);
                 System.out.println("수정 전 제목 : " + articles.get(i).title);
                 System.out.println("수정 전 내용 : " + articles.get(i).body);

@@ -65,15 +65,22 @@ public class SignUp {
 
             if (cmds.length == 1) {
                 head = cmds[0];
-            } else {
-                System.out.println("다시 입력해주세요");
-                run();
             }
 
-            if (head.equals("register")) {
+            if(head.equals("exit")) {
+                exit();
+            }
+
+            if(head.equals("logout")) {
+                logout();
+                exit();
+            } else if (head.equals("register")) {
                 register();
             } else if (head.equals("login")) {
                 login();
+            } else {
+                System.out.println("다시 입력해주세요");
+                run();
             }
 
         }
@@ -183,6 +190,12 @@ public class SignUp {
             System.out.println("로그아웃 후 이용해주세요");
             run();
         }
+    }
+
+    void logout() {
+        System.out.println("로그아웃 하였습니다");
+        signUpStatus = 0;
+        loginStatusMember = null;
     }
 
 }
