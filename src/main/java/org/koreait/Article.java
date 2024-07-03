@@ -34,45 +34,24 @@ public class Article {
     String head = "";
     String body = "";
     int tail = 0;
-    String searchTitle = "";
+    String search = "";
+    String cmd = "";
+
 
     public void run() {
         System.out.printf("명령어 ) ");
-        String cmd = sc.nextLine().trim();
-        String[] cmds = cmd.split(" ");
+        cmd = sc.nextLine().trim();
+        rq();
 
         if (cmd.length() == 0) {
             System.out.println("명령어를 입력해주세요");
             run();
         }
 
-        if (body.equals("list")) {
-            searchTitle = cmds[2];
-            list();
-        }
-
-        if (cmds.length == 2) {
-            head = cmds[0];
-            body = cmds[1];
-        } else if (cmds.length == 3) {
-            try {
-                head = cmds[0];
-                body = cmds[1];
-                tail = Integer.parseInt(cmds[2]);
-            } catch (NumberFormatException e) {
-                System.out.println("검색할 id는 숫자만 입력해주세요");
-                searchTitle = "";
-                run();
-            }
-            run();
-        }
-
-        if (body.equals("exit")) {
-            sc.close();
-        }
-
         while (loginStatus == 0) {
-            if (body.equals("write")) {
+            if (head.equals("exit")) {
+                exit();
+            } else if (body.equals("write")) {
                 write();
             } else if (body.equals("detail")) {
                 detail();
@@ -87,20 +66,23 @@ public class Article {
                 }
             } else if (body.equals("modify")) {
                 modify();
+            } else {
+                System.out.println("명령어를 다시 입력해주세요");
+                run();
             }
         }
+
     }
 
     public void write() {
         int id = lastId + 1;
+        rq();
         System.out.printf("Title : ");
         String title = sc.nextLine();
         System.out.printf("Body : ");
         String body = sc.nextLine();
         String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-        ;
         String time2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-        ;
 
         lastId++;
 
@@ -113,6 +95,7 @@ public class Article {
 
     public void detail() {
         int count = 0;
+        rq();
         for (int i = 0; i < articles.size(); i++) {
             if (tail == 0) {
                 System.out.println("검색할 id를 입력해주세요");
@@ -134,10 +117,11 @@ public class Article {
 
     public void delete() {
         int count = 0;
+        rq();
         for (int i = 0; i < articles.size(); i++) {
             if (tail == articles.get(i).id) {
+                System.out.println(articles.get(i).id + "번 게시글이 삭제되었습니다");
                 articles.remove(i);
-                System.out.println("게시글이 삭제되었습니다");
                 count++;
             }
         }
@@ -150,7 +134,8 @@ public class Article {
 
     public void list() {
         int count = 0;
-
+        rq();
+        String searchTitle = search;
         System.out.println("   번호 /   제목  /   내용");
         if (searchTitle == "") {
             for (int i = 0; i < articles.size(); i++) {
@@ -183,8 +168,10 @@ public class Article {
 
     public void modify() {
         int count = 0;
+        rq();
         for (int i = 0; i < articles.size(); i++) {
             if (tail == articles.get(i).id) {
+                System.out.println("수정 할 id : " + articles.get(i).id);
                 System.out.println("수정 전 제목 : " + articles.get(i).title);
                 System.out.println("수정 전 내용 : " + articles.get(i).body);
                 System.out.printf("제목 : ");
@@ -196,7 +183,7 @@ public class Article {
                 articles.get(i).body = body;
                 String time2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
                 articles.get(i).time2 = time2;
-
+                System.out.println(articles.get(i).id + "번글이 수정되었습니다");
                 run();
             }
         }
@@ -205,6 +192,41 @@ public class Article {
             System.out.println("검색하신 게시글은 없습니다");
         }
         run();
+    }
+
+    void rq() {
+        head = "";
+        body = "";
+        tail = 0;
+        search = "";
+        String[] cmds = cmd.split(" ");
+
+        if (cmds.length == 1) {
+            head = cmds[0];
+        } else if (cmds.length == 2) {
+            head = cmds[0];
+            body = cmds[1];
+        } else if (cmds.length == 3) {
+            try {
+                head = cmds[0];
+                body = cmds[1];
+                tail = Integer.parseInt(cmds[2]);
+            } catch (NumberFormatException e) {
+                System.out.println("검색할 id는 숫자만 입력해주세요");
+                run();
+            }
+        }
+
+        if (body.equals("list")) {
+            if (cmds.length == 3) {
+                search = cmds[2];
+            }
+        }
+    }
+
+    void exit() {
+        rq();
+        sc.close();
     }
 }
 
